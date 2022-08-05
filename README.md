@@ -26,6 +26,19 @@ azure-docs/set-up-devops-deployment-single-tenant-azure-logic-apps.md at main ·
 
 # Getting started
 
+Prepare .env file
+```
+export SUBSCRIPTION_ID="xxxxx"
+export SUBSCRIPTION_NAME="xxxxx"
+export RESOURCEGROUP_NAME="xxxxx"
+export LOCATION="xxxxx"
+export LOGIC_APP_NAME="xxxxx"
+export SERVICE_PRINCIPAL_NAME="xxxxx"
+export SERVICE_PRINCIPAL_USERNAME="xxxxx"
+export SERVICE_PRINCIPAL_PASSWORD="xxxxx"
+export TENANT_ID="xxxxx"
+```
+
 Login Azure
 ```
 az login
