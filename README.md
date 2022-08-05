@@ -47,7 +47,8 @@ sh script/delete_resource_group.sh
 
 # If error
 
-# Get customDomainVerificationId
+### Get customDomainVerificationId
+Sometimes need to get customDomainVerificationId dynamically
 ```
 az graph query -q "Resources | join kind=leftouter (ResourceContainers | where type=='microsoft.resources/subscriptions' | project subscriptionName=name, subscriptionId) on subscriptionId | where type == 'microsoft.web/sites'| project customVerificationId = tostring(properties.customDomainVerificationId), subscriptionId, subscriptionName | distinct *"
 ```
@@ -57,7 +58,7 @@ az graph query -q "Resources | project name, properties.customDomainVerification
 ```
 
 
-# The subscription is not registered to use namespace 'Microsoft.Logic'
+### The subscription is not registered to use namespace 'Microsoft.Logic'
 
 Install AzureRmResourceProvider in Admin Powershell
 https://stackoverflow.com/questions/64787022/the-term-register-azresourceprovider-is-not-recognized-as-the-name-of-a-cmdlet
