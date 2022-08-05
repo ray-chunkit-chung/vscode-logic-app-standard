@@ -1,7 +1,6 @@
 # azure-logic-app-standard
 azure logic app to track new file upload to one drive. If new, add an Azure queue
 
-
 # Install necessary program
   - .net core sdk 3.1 e.g. dotnet-sdk-3.1.421-win-x64
   - host bundle e.g. dotnet-hosting-3.1.27-win
@@ -9,6 +8,7 @@ azure logic app to track new file upload to one drive. If new, add an Azure queu
   - .net sdk 6.0 e.g. dotnet-sdk-6.0.302-win-x64
   - Vscode
   - Vscode extension: Logic app (standard), Azurite
+  - bash
 
 # CICD 
 
@@ -21,29 +21,31 @@ azure-docs/create-single-tenant-workflows-visual-studio-code.md at main · Micro
  - Step???? enable the run history for that workflow.
 https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/logic-apps/create-single-tenant-workflows-visual-studio-code.md#enable-run-history-stateless
 
-
  - Step3 devops-deployment
 azure-docs/set-up-devops-deployment-single-tenant-azure-logic-apps.md at main · MicrosoftDocs/azure-docs · GitHub
 
+# Getting started
 
-# Create workflow
-
-https://docs.microsoft.com/en-us/cli/azure/logicapp?view=azure-cli-latest
+Login Azure
 ```
-az logic workflow create -n demo -g test -l centralus --definition .\src\workflow.json
-```
-
-Install logic app extension https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/logic-apps/set-up-devops-deployment-single-tenant-azure-logic-apps.md
-```
-az extension add --yes --source "https://aka.ms/logicapp-latest-py2.py3-none-any.whl"
-```
-Deploy
-```
-az logicapp deployment source config-zip --name MyLogicAppName 
-   --resource-group MyResourceGroupName --subscription MySubscription 
-   --src MyBuildArtifact.zip
+az login
 ```
 
+Deploy infrastructure and workflow 
+```
+source .env
+sh script/create_resource_group.sh
+sh script/deploy_logic_app_asp.sh 
+sh script/deploy_workflow.sh
+```
+
+# Delete everything
+
+```
+sh script/delete_resource_group.sh
+```
+
+# If error
 
 # Get customDomainVerificationId
 ```
@@ -53,6 +55,7 @@ az graph query -q "Resources | join kind=leftouter (ResourceContainers | where t
 ```
 az graph query -q "Resources | project name, properties.customDomainVerificationId, type | where type == 'microsoft.web/sites'"
 ```
+
 
 # The subscription is not registered to use namespace 'Microsoft.Logic'
 
@@ -90,84 +93,5 @@ At line:1 char:1
 + ~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : SecurityError: (:) [Import-Module], PSSecurityException
     + FullyQualifiedErrorId : UnauthorizedAccess,Microsoft.PowerShell.Commands.ImportModuleCommand
-```
-
-
-
-
-
-# Getting started
-
-Login Azure
-```
-az login
-```
-
-Create resource group (Assume a subscription exists)
-```
-az group create --subscription $SUBSCRIPTION_NAME \
-                --location $LOCATION \
-                --name $RESOURCEGROUP_NAME \
-                --tags "$TAGS"
-```
-
-Create storage account
-```
-az storage account create --subscription $SUBSCRIPTION_NAME \
-                          --name $STORAGE_NAME \
-                          --resource-group $RESOURCEGROUP_NAME
-```
-
-Create queues in storage account
-```
-az deployment group create --subscription $SUBSCRIPTION_NAME \
-                           --resource-group $RESOURCEGROUP_NAME \
-                           --template-file ArmTemplate/queue/template.json
-```
-<!-- ```
-az deployment group create --subscription $SUBSCRIPTION_NAME \
-                           --resource-group $RESOURCEGROUP_NAME \
-                           --template-file ArmTemplate/queue/template.json \
-                           --parameters ArmTemplate/queue/parameters.json
-
-az storage queue create --subscription $SUBSCRIPTION_NAME \
-                        --name $STORAGE_QUEUE_NAME \
-
-az deployment group create --subscription $SUBSCRIPTION_NAME \
-                           --resource-group $RESOURCEGROUP_NAME \
-                           --template-file ArmTemplate/logicApp/template.json
-``` -->
-
-
-Create api connection to one drive and queue in this resource group
-```
-az deployment group create --subscription $SUBSCRIPTION_NAME \
-                           --resource-group $RESOURCEGROUP_NAME \
-                           --template-file ArmTemplate/api_queue/template.json
-az deployment group create --subscription $SUBSCRIPTION_NAME \
-                           --resource-group $RESOURCEGROUP_NAME \
-                           --template-file ArmTemplate/api_onedrive/template.json
-```
-
-Create logic app to connect one drive and queue
-```
-az deployment group create --subscription $SUBSCRIPTION_NAME \
-                           --resource-group $RESOURCEGROUP_NAME \
-                           --template-file ArmTemplate/logicApp/template.json
-```
-
-Start the logic app
-```
-az logicapp start --subscription $SUBSCRIPTION_NAME \
-                  --resource-group $RESOURCEGROUP_NAME \
-                  --name $LOGICAPP_NAME
-```
-
-
-
-# Delete everything
-
-```
-az group delete --name $RESOURCEGROUP_NAME
 ```
 
