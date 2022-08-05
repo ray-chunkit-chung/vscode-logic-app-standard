@@ -1,0 +1,22 @@
+{
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "actions": {},
+    "contentVersion": "1.0.0.0",
+    "outputs": {},
+    "triggers": {
+      "HTTP": {
+        "inputs": {
+          "method": "GET",
+          "uri": "https://www.google.com/"
+        },
+        "recurrence": {
+          "frequency": "Second",
+          "interval": 15
+        },
+        "type": "Http"
+      }
+    }
+  },
+  "kind": "Stateful"
+}
